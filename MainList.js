@@ -13,7 +13,7 @@ var {
         TextInput,
         BackAndroid,
         } = ReactNative;
-
+import TabBar from 'react-native-xtabbar';
 
 var MainList = React.createClass({
     statics: {
@@ -80,15 +80,54 @@ var MainList = React.createClass({
                            keyboardType="default"
                            onChangeText={text => this.SearchTitle(text)}
                     />
-                <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={this._renderRow}
-                    enableEmptySections={true}
-                    renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
-                    renderSeparator={this._renderSeperator}
-                    //onEndReached={this.fetchNext}
-                    //onEndReachedThreshold={20}
-                    />
+                <TabBar
+                    style={styles.content}
+                    onItemSelected={(index) => {console.log(`current item's index is ${index}`);}}
+                    >
+                    <TabBar.Item
+                        //icon={require('./image/start_normal.png')}
+                        //selectedIcon={require('./image/start_hightlight.png')}
+                        onPress={() => {
+            // do sth
+        }}
+                        title='首页'>
+                        <ListView
+                            dataSource={this.state.dataSource}
+                            renderRow={this._renderRow}
+                            enableEmptySections={true}
+                            renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+                            renderSeparator={this._renderSeperator}
+                            onEndReached={this.fetchNext}
+                            onEndReachedThreshold={20}
+                            />
+                    </TabBar.Item>
+
+                    <TabBar.Item
+                        //icon={require('./image/start_normal.png')}
+                        //selectedIcon={require('./image/start_hightlight.png')}
+                        title='定位'>
+                        <View style={styles.text}>
+                            <Text style={{fontSize: 18}}>Me</Text>
+                        </View>
+                    </TabBar.Item>
+                    <TabBar.Item
+                        //icon={require('./image/start_normal.png')}
+                        //selectedIcon={require('./image/start_hightlight.png')}
+                        title='发现'>
+                        <View style={styles.text}>
+                            <Text style={{fontSize: 18}}>Me</Text>
+                        </View>
+                    </TabBar.Item>
+
+                    <TabBar.Item
+                        //icon={require('./image/start_normal.png')}
+                        //selectedIcon={require('./image/start_hightlight.png')}
+                        title='我'>
+                        <View style={styles.text}>
+                            <Text style={{fontSize: 18}}>Me</Text>
+                        </View>
+                    </TabBar.Item>
+                </TabBar>
             </View>
         );
     },
