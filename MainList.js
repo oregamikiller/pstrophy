@@ -214,7 +214,7 @@ var MainList = React.createClass({
                 .then((responseData) => {
                     dataList[currentIndex] = responseData;
                     this.setState({
-                        dataSource: this.state.dataSource.cloneWithRows(dataList0),
+                        dataSource: this.state.dataSource.cloneWithRows(dataList[currentIndex]),
                         loaded: true,
                     });
                 })
