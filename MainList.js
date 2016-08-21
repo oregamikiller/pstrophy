@@ -12,8 +12,11 @@ var {
         View,
         TextInput,
         BackAndroid,
+        WebView,
         } = ReactNative;
 import TabBar from 'react-native-xtabbar';
+
+var CustomWebView = require('./CustomWebView');
 
 var MainList = React.createClass({
     statics: {
@@ -30,15 +33,24 @@ var MainList = React.createClass({
                 return false;
             }
         });
-        this.fetchData();
+        //this.fetchData();
     },
     fetchData: function () {
-        fetch('http://semidream.com/trophydata')
+        if (currentIndex===0) {
+            dataUrl = 'http://semidream.com/trophydata/'
+        } else {
+            dataUrl = 'http://semidream.com/trophydata/title/' + 1
+        }
+        fetch(dataUrl)
             .then((response) => response.json())
             .then((responseData) => {
-                remoteData = responseData;
+                dataList[currentIndex] = responseData;
+                if (responseData.length < 20) { hasMore = false;
+                } else {
+                    hasMore = true;
+                }
                 this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(remoteData),
+                    dataSource: this.state.dataSource.cloneWithRows(dataList[currentIndex]),
                     loaded: true,
                 });
             })
@@ -46,17 +58,26 @@ var MainList = React.createClass({
     },
 
     fetchNext: function () {
+        if (currentIndex===0) {
+            dataUrl = 'http://semidream.com/trophydata/'
+        } else {
+            dataUrl = 'http://semidream.com/trophydata/title/' + 1
+        }
         let page = parseInt(this.state.dataSource.getRowCount() / 20) + 1;
-        console.log(page);
-        if (!searchFlag) {
-            fetch('http://semidream.com/trophydata/' + page)
+        if (requestFinished && hasMore && !searchFlag) {
+            requestFinished = false;
+            fetch(dataUrl + page)
                 .then((response) => response.json())
                 .then((responseData) => {
-                    remoteData = remoteData.concat(responseData);
+                    requestFinished = true;
+                    console.log(responseData.length);
+                    if (responseData.length < 20) { hasMore = false;}
+                    dataList[currentIndex] = dataList[currentIndex].concat(responseData);
                     this.setState({
-                        dataSource: this.state.dataSource.cloneWithRows(remoteData),
+                        dataSource: this.state.dataSource.cloneWithRows(dataList[currentIndex]),
                         loaded: true,
                     });
+
                 })
                 .done();
         }
@@ -72,6 +93,7 @@ var MainList = React.createClass({
 
 
     render: function () {
+        var self = this;
         return (
             <View style={styles.container}>
                 <TextInput style={styles.searchbox}
@@ -82,15 +104,41 @@ var MainList = React.createClass({
                     />
                 <TabBar
                     style={styles.content}
-                    onItemSelected={(index) => {console.log(`current item's index is ${index}`);}}
+                    onItemSelected={(index) => {console.log(`current item's index is ${index}`);
+                        currentIndex = index;
+                        this.fetchData();
+                        self.setState({
+                        dataSource: self.state.dataSource.cloneWithRows(dataList[currentIndex]),
+                        loaded: true,
+                    });
+                        }}
                     >
                     <TabBar.Item
-                        //icon={require('./image/start_normal.png')}
-                        //selectedIcon={require('./image/start_hightlight.png')}
+                        icon={require('./img/tabbaricon1.jpg')}
+                        selectedIcon={require('./img/tabbaricon1.jpg')}
                         onPress={() => {
             // do sth
         }}
-                        title='首页'>
+                        title='奖杯'>
+
+                            <ListView
+                                dataSource={this.state.dataSource}
+                                renderRow={this._renderRow}
+                                enableEmptySections={true}
+                                renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+                                renderSeparator={this._renderSeperator}
+                                onEndReached={this.fetchNext}
+                                onEndReachedThreshold={20}
+                                />
+
+                    </TabBar.Item>
+
+                    <TabBar.Item
+                        icon={require('./img/tabbaricon1.jpg')}
+                        selectedIcon={require('./img/tabbaricon1.jpg')}
+                        onPress={() => {
+                    }}
+                        title='攻略'>
                         <ListView
                             dataSource={this.state.dataSource}
                             renderRow={this._renderRow}
@@ -98,31 +146,24 @@ var MainList = React.createClass({
                             renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
                             renderSeparator={this._renderSeperator}
                             onEndReached={this.fetchNext}
-                            onEndReachedThreshold={20}
+                            onEndReachedThreshold={100}
                             />
                     </TabBar.Item>
+                    <TabBar.Item
+                        icon={require('./img/tabbaricon1.jpg')}
+                        selectedIcon={require('./img/tabbaricon1.jpg')}
+                        title='新闻'>
+                            <WebView
+                                source={{uri: 'http://semidream.com'}}
+                                style={{marginTop: 20}}
+                                />
 
-                    <TabBar.Item
-                        //icon={require('./image/start_normal.png')}
-                        //selectedIcon={require('./image/start_hightlight.png')}
-                        title='定位'>
-                        <View style={styles.text}>
-                            <Text style={{fontSize: 18}}>Me</Text>
-                        </View>
-                    </TabBar.Item>
-                    <TabBar.Item
-                        //icon={require('./image/start_normal.png')}
-                        //selectedIcon={require('./image/start_hightlight.png')}
-                        title='发现'>
-                        <View style={styles.text}>
-                            <Text style={{fontSize: 18}}>Me</Text>
-                        </View>
                     </TabBar.Item>
 
                     <TabBar.Item
-                        //icon={require('./image/start_normal.png')}
-                        //selectedIcon={require('./image/start_hightlight.png')}
-                        title='我'>
+                        icon={require('./img/tabbaricon1.jpg')}
+                        selectedIcon={require('./img/tabbaricon1.jpg')}
+                        title='我的'>
                         <View style={styles.text}>
                             <Text style={{fontSize: 18}}>Me</Text>
                         </View>
@@ -140,7 +181,7 @@ var MainList = React.createClass({
                     <View style={styles.row}>
                         <Image style={styles.thumb} source={{uri:rowData.picUrl}}/>
                         <Text style={styles.text}>
-                            {rowData.title } {"\n"} {rowData.desc}
+                            {rowData.title }{"\n"}{rowData.desc}{"\n"}{rowData.plantForm}
                         </Text>
                     </View>
                 </View>
@@ -154,9 +195,9 @@ var MainList = React.createClass({
             fetch('http://semidream.com/trophydata/title/' + text)
                 .then((response) => response.json())
                 .then((responseData) => {
-                    remoteData = responseData;
+                    dataList[currentIndex] = responseData;
                     this.setState({
-                        dataSource: this.state.dataSource.cloneWithRows(remoteData),
+                        dataSource: this.state.dataSource.cloneWithRows(dataList0),
                         loaded: true,
                     });
                 })
@@ -168,11 +209,11 @@ var MainList = React.createClass({
     },
 
     pressRow: function (rowID:number) {
-        console.log(remoteData[rowID].url);
+        console.log(dataList[currentIndex][rowID].url);
         this.props.navigator.push({
 
             name: 'detail',
-            gameid: remoteData[rowID].id
+            gameid: dataList[currentIndex][rowID].id
         });
     },
 
@@ -191,8 +232,16 @@ var MainList = React.createClass({
 
 });
 
-var remoteData = [];
+var dataList0 = [];
+var dataList1 = [];
+var dataList2 = [];
+var dataList3 = [];
+var dataUrl = '';
+var dataList = [dataList0, dataList1, dataList2, dataList3]
+var hasMore= true;
 var searchFlag = false;
+var requestFinished = true;
+var currentIndex = 0;
 
 var hashCode = function (str) {
     var hash = 15;
