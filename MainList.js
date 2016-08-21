@@ -36,10 +36,12 @@ var MainList = React.createClass({
         //this.fetchData();
     },
     fetchData: function () {
-        if (currentIndex===0) {
-            dataUrl = 'http://semidream.com/trophydata/'
-        } else {
-            dataUrl = 'http://semidream.com/trophydata/title/' + 1
+        switch(currentIndex){
+            case 0: dataUrl = 'http://semidream.com/trophydata/';break;
+            case 1: dataUrl = 'http://semidream.com/guidedata/';break;
+            case 2: dataUrl = 'http://semidream.com/data/';break;
+            case 3: dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
+            default : dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
         }
         fetch(dataUrl)
             .then((response) => response.json())
@@ -58,19 +60,25 @@ var MainList = React.createClass({
     },
 
     fetchNext: function () {
-        if (currentIndex===0) {
-            dataUrl = 'http://semidream.com/trophydata/'
-        } else {
-            dataUrl = 'http://semidream.com/trophydata/title/' + 1
+        console.log("here");
+        switch(currentIndex){
+            case 0: dataUrl = 'http://semidream.com/trophydata/';break;
+            case 1: dataUrl = 'http://semidream.com/guidedata/';break;
+            case 2: dataUrl = 'http://semidream.com/data/';break;
+            case 3: dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
+            default : dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
         }
         let page = parseInt(this.state.dataSource.getRowCount() / 20) + 1;
         if (requestFinished && hasMore && !searchFlag) {
+            if (currentIndex === 2) {
+                page = "";
+            }
             requestFinished = false;
             fetch(dataUrl + page)
                 .then((response) => response.json())
                 .then((responseData) => {
                     requestFinished = true;
-                    console.log(responseData.length);
+                    console.log(responseData.length, responseData);
                     if (responseData.length < 20) { hasMore = false;}
                     dataList[currentIndex] = dataList[currentIndex].concat(responseData);
                     this.setState({
@@ -146,17 +154,22 @@ var MainList = React.createClass({
                             renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
                             renderSeparator={this._renderSeperator}
                             onEndReached={this.fetchNext}
-                            onEndReachedThreshold={100}
+                            onEndReachedThreshold={20}
                             />
                     </TabBar.Item>
                     <TabBar.Item
                         icon={require('./img/tabbaricon1.jpg')}
                         selectedIcon={require('./img/tabbaricon1.jpg')}
                         title='新闻'>
-                            <WebView
-                                source={{uri: 'http://semidream.com'}}
-                                style={{marginTop: 20}}
-                                />
+                        <ListView
+                            dataSource={this.state.dataSource}
+                            renderRow={this._renderRow}
+                            enableEmptySections={true}
+                            renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+                            renderSeparator={this._renderSeperator}
+                            onEndReached={this.fetchNext}
+                            onEndReachedThreshold={20}
+                            />
 
                     </TabBar.Item>
 
@@ -175,11 +188,15 @@ var MainList = React.createClass({
 
     _renderRow: function (rowData:string, sectionID:number, rowID:number) {
         var rowHash = Math.abs(hashCode(rowData));
+        if (rowData.abstract) {
+            rowData.desc = '来源: ' + rowData.source;
+            rowData.picUrl = rowData.pic_url;
+        }
         return (
             <TouchableHighlight onPress={() => this.pressRow(rowID)}>
                 <View>
                     <View style={styles.row}>
-                        <Image style={styles.thumb} source={{uri:rowData.picUrl}}/>
+                        <Image style={styles.thumb} source={{uri:rowData.picUrl || './img/1'}}/>
                         <Text style={styles.text}>
                             {rowData.title }{"\n"}{rowData.desc}{"\n"}{rowData.plantForm}
                         </Text>
@@ -210,6 +227,7 @@ var MainList = React.createClass({
 
     pressRow: function (rowID:number) {
         console.log(dataList[currentIndex][rowID].url);
+
         this.props.navigator.push({
 
             name: 'detail',
