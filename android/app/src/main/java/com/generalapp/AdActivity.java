@@ -21,7 +21,6 @@ import android.widget.Toast;
  */
 public class AdActivity extends Activity {
 
-	private static final String TAG = "youmi-demo";
 
 	private Context mContext;
 
@@ -29,7 +28,7 @@ public class AdActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ad);
-		Toast.makeText(this, "NativeActivity", 5).show();
+		Toast.makeText(this, "Load Native-Activity by name success", 5).show();
 
 	}
 

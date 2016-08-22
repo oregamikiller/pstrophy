@@ -12,6 +12,7 @@ var {
 var Routes         = require('./Routes');
 var ListScence     = require('./MainList');
 var TrophyListView = require('./TrophyListView');
+var CustomWebView  = require('./CustomWebView')
 
 var NavigatorScene = React.createClass({
 
@@ -24,6 +25,8 @@ var NavigatorScene = React.createClass({
     renderScene: function (route, navigator) {
         if (route && route.name == 'detail') {
             return <TrophyListView gameid={route.gameid} navigator={navigator}/>
+        } else if (route && route.name == 'webPage') {
+            return <CustomWebView targetUrl={route.targetUrl} navigator={navigator}/>
         }
         return ( <ListScence navigator={navigator}/> );
     },

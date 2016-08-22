@@ -21,8 +21,6 @@ var TrophyListView = React.createClass({
         title: 'Trophy',
         description: 'Performant, scrollable list of data.'
     },
-
-
     componentDidMount: function () {
         var self = this;
         BackAndroid.addEventListener('hardwareBackPress', function () {

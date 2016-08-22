@@ -60,7 +60,6 @@ var MainList = React.createClass({
     },
 
     fetchNext: function () {
-        console.log("here");
         switch(currentIndex){
             case 0: dataUrl = 'http://semidream.com/trophydata/';break;
             case 1: dataUrl = 'http://semidream.com/guidedata/';break;
@@ -70,9 +69,6 @@ var MainList = React.createClass({
         }
         let page = parseInt(this.state.dataSource.getRowCount() / 20) + 1;
         if (requestFinished && hasMore && !searchFlag) {
-            if (currentIndex === 2) {
-                page = "";
-            }
             requestFinished = false;
             fetch(dataUrl + page)
                 .then((response) => response.json())
@@ -104,7 +100,8 @@ var MainList = React.createClass({
         var self = this;
         return (
             <View style={styles.container}>
-                <TextInput style={styles.searchbox}
+                <TextInput ref = "searchInput"
+                           style={styles.searchbox}
                            placeholder="请输入想搜索游戏的标题"
                            returnKeyType="search"
                            keyboardType="default"
@@ -114,6 +111,8 @@ var MainList = React.createClass({
                     style={styles.content}
                     onItemSelected={(index) => {console.log(`current item's index is ${index}`);
                         currentIndex = index;
+                        this.refs.searchInput.setNativeProps({text: ''});
+                        searchFlag = false;
                         this.fetchData();
                         self.setState({
                         dataSource: self.state.dataSource.cloneWithRows(dataList[currentIndex]),
@@ -177,8 +176,10 @@ var MainList = React.createClass({
                         icon={require('./img/tabbaricon1.jpg')}
                         selectedIcon={require('./img/tabbaricon1.jpg')}
                         title='我的'>
-                        <View style={styles.text}>
-                            <Text style={{fontSize: 18}}>Me</Text>
+                        <View style={{padding: 30}}>
+                            <Text>
+                                用户注册登录后自定义功能开发中,有对本应用的意见和建议可以联系madaow@163.com
+                            </Text>
                         </View>
                     </TabBar.Item>
                 </TabBar>
@@ -188,15 +189,18 @@ var MainList = React.createClass({
 
     _renderRow: function (rowData:string, sectionID:number, rowID:number) {
         var rowHash = Math.abs(hashCode(rowData));
-        if (rowData.abstract) {
+        if (rowData.pic_url) {
             rowData.desc = '来源: ' + rowData.source;
             rowData.picUrl = rowData.pic_url;
+        }
+        if (rowData.picUrl === null) {
+            rowData.picUrl = 'http://p.pstatp.com/thumb/ca20003cd127d9542be';
         }
         return (
             <TouchableHighlight onPress={() => this.pressRow(rowID)}>
                 <View>
                     <View style={styles.row}>
-                        <Image style={styles.thumb} source={{uri:rowData.picUrl || './img/1'}}/>
+                        <Image style={styles.thumb} source={{uri:rowData.picUrl}}/>
                         <Text style={styles.text}>
                             {rowData.title }{"\n"}{rowData.desc}{"\n"}{rowData.plantForm}
                         </Text>
@@ -209,7 +213,12 @@ var MainList = React.createClass({
     SearchTitle: function (text) {
         if (text.length >= 1) {
             searchFlag = true;
-            fetch('http://semidream.com/trophydata/title/' + text)
+            switch(currentIndex){
+                case 0: dataUrl = 'http://semidream.com/trophydata/title/';break;
+                case 1: dataUrl = 'http://semidream.com/guidedata/title/';break;
+                default : dataUrl = 'http://semidream.com/trophydata/title/';break;
+            }
+            fetch(dataUrl + text)
                 .then((response) => response.json())
                 .then((responseData) => {
                     dataList[currentIndex] = responseData;
@@ -226,13 +235,25 @@ var MainList = React.createClass({
     },
 
     pressRow: function (rowID:number) {
-        console.log(dataList[currentIndex][rowID].url);
-
-        this.props.navigator.push({
-
-            name: 'detail',
-            gameid: dataList[currentIndex][rowID].id
-        });
+        switch(currentIndex){
+            case 0: this.props.navigator.push({
+                        name: 'detail',
+                        gameid: dataList[currentIndex][rowID].id
+                    });
+                    break;
+            case 1: this.props.navigator.push({
+                        name: 'webPage',
+                        targetUrl: dataList[currentIndex][rowID].url
+                    });
+                    break;
+            case 2: this.props.navigator.push({
+                        name: 'webPage',
+                        targetUrl: dataList[currentIndex][rowID].detail_url
+                    });
+                    break;
+            case 3: break;
+            default : break;
+        }
     },
 
     _renderSeperator: function (sectionID:number, rowID:number, adjacentRowHighlighted:bool) {
