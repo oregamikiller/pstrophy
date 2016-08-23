@@ -46,7 +46,7 @@ var MainList = React.createClass({
         fetch(dataUrl)
             .then((response) => response.json())
             .then((responseData) => {
-                dataList[currentIndex] = responseData;
+                dataList[currentIndex] = [].concat(responseData);
                 if (responseData.length < 20) { hasMore = false;
                 } else {
                     hasMore = true;
@@ -55,7 +55,7 @@ var MainList = React.createClass({
                     dataSource: this.state.dataSource.cloneWithRows(dataList[currentIndex]),
                     loaded: true,
                 });
-            })
+            }).catch(console.log)
             .done();
     },
 
@@ -82,7 +82,7 @@ var MainList = React.createClass({
                         loaded: true,
                     });
 
-                })
+                }).catch(console.log)
                 .done();
         }
     },
@@ -141,8 +141,8 @@ var MainList = React.createClass({
                     </TabBar.Item>
 
                     <TabBar.Item
-                        icon={require('./img/tabbaricon1.jpg')}
-                        selectedIcon={require('./img/tabbaricon1.jpg')}
+                        icon={require('./img/tabbaricon2.png')}
+                        selectedIcon={require('./img/tabbaricon2.png')}
                         onPress={() => {
                     }}
                         title='攻略'>
@@ -157,8 +157,8 @@ var MainList = React.createClass({
                             />
                     </TabBar.Item>
                     <TabBar.Item
-                        icon={require('./img/tabbaricon1.jpg')}
-                        selectedIcon={require('./img/tabbaricon1.jpg')}
+                        icon={require('./img/tabbaricon3.jpg')}
+                        selectedIcon={require('./img/tabbaricon3.jpg')}
                         title='新闻'>
                         <ListView
                             dataSource={this.state.dataSource}
@@ -173,8 +173,8 @@ var MainList = React.createClass({
                     </TabBar.Item>
 
                     <TabBar.Item
-                        icon={require('./img/tabbaricon1.jpg')}
-                        selectedIcon={require('./img/tabbaricon1.jpg')}
+                        icon={require('./img/tabbaricon4.png')}
+                        selectedIcon={require('./img/tabbaricon4.png')}
                         title='我的'>
                         <View style={{padding: 30}}>
                             <Text>
@@ -226,7 +226,7 @@ var MainList = React.createClass({
                         dataSource: this.state.dataSource.cloneWithRows(dataList[currentIndex]),
                         loaded: true,
                     });
-                })
+                }).catch(console.log)
                 .done();
         } else {
             searchFlag = false;

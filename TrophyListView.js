@@ -109,8 +109,8 @@ var TrophyListView = React.createClass({
         if (Platform.OS === 'ios')  {
             this.props.navigator.pop();
         } else {
-            //this.props.navigator.pop();
-            NativeAndroidActivityLoader.startActivityByString('com.generalapp.AdActivity');
+            this.props.navigator.pop();
+            //NativeAndroidActivityLoader.startActivityByString('com.generalapp.AdActivity');
         }
 
 },
