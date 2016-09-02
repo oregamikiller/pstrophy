@@ -14,7 +14,7 @@ import {
 
 var Nav = require('./NavigatorScene');
 
-class generalApp extends Component {
+class pstrophy extends Component {
     render() {
         return (
             <Nav />
@@ -37,4 +37,4 @@ const styles = StyleSheet.create({
     },
 });
 
-AppRegistry.registerComponent('generalApp', () => generalApp);
+AppRegistry.registerComponent('pstrophy', () => pstrophy);

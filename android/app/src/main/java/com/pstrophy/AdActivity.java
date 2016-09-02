@@ -1,4 +1,4 @@
-package com.generalapp;
+package com.pstrophy;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,9 +27,6 @@ public class AdActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_ad);
-		Toast.makeText(this, "Load Native-Activity by name success", 5).show();
-
 	}
 
 

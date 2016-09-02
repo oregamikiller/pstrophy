@@ -1,3 +1,3 @@
-rootProject.name = 'generalApp'
+rootProject.name = 'pstrophy'
 
 include ':app'

@@ -1,4 +1,4 @@
-package com.generalapp;
+package com.pstrophy;
 import android.app.Activity;
 
 import com.facebook.react.ReactPackage;
@@ -10,7 +10,7 @@ import com.facebook.react.uimanager.ViewManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import com.generalapp.NativeAndroidActivityLoaderModule;
+import com.pstrophy.NativeAndroidActivityLoaderModule;
 class NativeAndroidLoaderReactPackage implements ReactPackage {
 
   @Override

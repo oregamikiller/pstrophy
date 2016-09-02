@@ -37,9 +37,9 @@ var MainList = React.createClass({
     },
     fetchData: function () {
         switch(currentIndex){
-            case 0: dataUrl = 'http://semidream.com/trophydata/';break;
-            case 1: dataUrl = 'http://semidream.com/guidedata/';break;
-            case 2: dataUrl = 'http://semidream.com/data/';break;
+            case 0: dataUrl = 'http://semidream.com/trophydata/?platForm=ps4';break;
+            case 1: dataUrl = 'http://semidream.com/trophydata/?platForm=ps3';break;
+            case 2: dataUrl = 'http://semidream.com/trophydata/?platForm=psv';break;
             case 3: dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
             default : dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
         }
@@ -61,9 +61,9 @@ var MainList = React.createClass({
 
     fetchNext: function () {
         switch(currentIndex){
-            case 0: dataUrl = 'http://semidream.com/trophydata/';break;
-            case 1: dataUrl = 'http://semidream.com/guidedata/';break;
-            case 2: dataUrl = 'http://semidream.com/data/';break;
+            case 0: dataUrl = 'http://semidream.com/trophydata/?platForm=ps4';break;
+            case 1: dataUrl = 'http://semidream.com/trophydata/?platForm=ps3';break;
+            case 2: dataUrl = 'http://semidream.com/trophydata/?platForm=psv';break;
             case 3: dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
             default : dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
         }
@@ -126,7 +126,7 @@ var MainList = React.createClass({
                         onPress={() => {
             // do sth
         }}
-                        title='奖杯'>
+                        title='PS4'>
 
                             <ListView
                                 dataSource={this.state.dataSource}
@@ -145,7 +145,7 @@ var MainList = React.createClass({
                         selectedIcon={require('./img/tabbaricon2.png')}
                         onPress={() => {
                     }}
-                        title='攻略'>
+                        title='PS3'>
                         <ListView
                             dataSource={this.state.dataSource}
                             renderRow={this._renderRow}
@@ -159,7 +159,7 @@ var MainList = React.createClass({
                     <TabBar.Item
                         icon={require('./img/tabbaricon3.jpg')}
                         selectedIcon={require('./img/tabbaricon3.jpg')}
-                        title='新闻'>
+                        title='PSV'>
                         <ListView
                             dataSource={this.state.dataSource}
                             renderRow={this._renderRow}
@@ -213,11 +213,7 @@ var MainList = React.createClass({
     SearchTitle: function (text) {
         if (text.length >= 1) {
             searchFlag = true;
-            switch(currentIndex){
-                case 0: dataUrl = 'http://semidream.com/trophydata/title/';break;
-                case 1: dataUrl = 'http://semidream.com/guidedata/title/';break;
-                default : dataUrl = 'http://semidream.com/trophydata/title/';break;
-            }
+            dataUrl = 'http://semidream.com/trophydata/title/';
             fetch(dataUrl + text)
                 .then((response) => response.json())
                 .then((responseData) => {
@@ -235,25 +231,11 @@ var MainList = React.createClass({
     },
 
     pressRow: function (rowID:number) {
-        switch(currentIndex){
-            case 0: this.props.navigator.push({
+
+            this.props.navigator.push({
                         name: 'detail',
                         gameid: dataList[currentIndex][rowID].id
                     });
-                    break;
-            case 1: this.props.navigator.push({
-                        name: 'webPage',
-                        targetUrl: dataList[currentIndex][rowID].url
-                    });
-                    break;
-            case 2: this.props.navigator.push({
-                        name: 'webPage',
-                        targetUrl: dataList[currentIndex][rowID].detail_url
-                    });
-                    break;
-            case 3: break;
-            default : break;
-        }
     },
 
     _renderSeperator: function (sectionID:number, rowID:number, adjacentRowHighlighted:bool) {

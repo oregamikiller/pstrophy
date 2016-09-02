@@ -1,4 +1,4 @@
-package com.generalapp;
+package com.pstrophy;
 
 import android.app.Activity;
 import android.content.Intent;
