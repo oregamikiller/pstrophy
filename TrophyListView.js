@@ -61,7 +61,7 @@ var TrophyListView = React.createClass({
     render: function () {
         return (
 
-            <ListView
+            <ListView style={{marginTop: 20}}
                 dataSource={this.state.dataSource}
                 enableEmptySections={true}
                 renderRow={this._renderRow}

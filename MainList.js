@@ -39,7 +39,7 @@ var MainList = React.createClass({
         switch(currentIndex){
             case 0: dataUrl = 'http://semidream.com/trophydata/?platForm=ps4';break;
             case 1: dataUrl = 'http://semidream.com/trophydata/?platForm=ps3';break;
-            case 2: dataUrl = 'http://semidream.com/trophydata/?platForm=psv';break;
+            case 2: dataUrl = 'http://semidream.com/trophydata/?platForm=psvita';break;
             case 3: dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
             default : dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
         }
@@ -61,9 +61,9 @@ var MainList = React.createClass({
 
     fetchNext: function () {
         switch(currentIndex){
-            case 0: dataUrl = 'http://semidream.com/trophydata/?platForm=ps4';break;
-            case 1: dataUrl = 'http://semidream.com/trophydata/?platForm=ps3';break;
-            case 2: dataUrl = 'http://semidream.com/trophydata/?platForm=psv';break;
+            case 0: dataUrl = 'http://semidream.com/trophydata/?platForm=ps4&page=';break;
+            case 1: dataUrl = 'http://semidream.com/trophydata/?platForm=ps3&page=';break;
+            case 2: dataUrl = 'http://semidream.com/trophydata/?platForm=psvita&page=';break;
             case 3: dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
             default : dataUrl = 'http://semidream.com/trophydata/title/' + 1;break;
         }
@@ -113,6 +113,7 @@ var MainList = React.createClass({
                         currentIndex = index;
                         this.refs.searchInput.setNativeProps({text: ''});
                         searchFlag = false;
+                        hasMore = false;
                         this.fetchData();
                         self.setState({
                         dataSource: self.state.dataSource.cloneWithRows(dataList[currentIndex]),
